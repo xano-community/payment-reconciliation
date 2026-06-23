@@ -1,6 +1,6 @@
 # Payment Reconciliation (Xano module)
 
-Reconcile your **internal transaction records** against **processor payout data** from **Stripe**, **Adyen**, and **ACH** — automatically matching by reference, then by amount, and flagging every unmatched, mismatched, or duplicate row as a typed exception you can work down to zero.
+Reconcile your **internal transaction records** against **processor payout data** from **Stripe**, **Adyen**, and **ACH** — automatically matching by reference, then by amount, and flagging every unmatched or mismatched row as a typed exception you can work down to zero.
 
 Drop this module into any Xano workspace. It ships four tables and a small public function surface; you feed it your internal ledger rows plus raw processor payloads, then call `/reconcile` to produce matches and a clean exception queue.
 
@@ -13,7 +13,7 @@ Drop this module into any Xano workspace. It ships four tables and a small publi
 | `pr_internal_txn` | One row per internal transaction, keyed by `external_ref` (unique). `matched` flips to true once reconciled. |
 | `pr_processor_txn` | One canonical row per processor transaction, keyed by `processor:processor_ref` (unique). Normalized amount, fee, net, currency. |
 | `pr_match` | A recorded pairing of one internal row to one processor row, with `match_type` (`exact_ref`/`amount_date`/`manual`) and the `amount_delta`. |
-| `pr_exception` | A typed exception (`unmatched_internal`/`unmatched_processor`/`amount_mismatch`/`duplicate`) with `detail` JSON and a workflow `status` (`open`/`resolved`). |
+| `pr_exception` | A typed exception (`unmatched_internal`/`unmatched_processor`/`amount_mismatch`) with `detail` JSON and a workflow `status` (`open`/`resolved`). The schema also reserves a `duplicate` kind for future use, but the reconcile engine does not produce it yet. |
 
 **Public function surface** (call from any XanoScript via `function.run`)
 
